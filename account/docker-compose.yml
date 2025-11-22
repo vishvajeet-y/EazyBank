@@ -1,0 +1,49 @@
+#Docker compose is tool for defining and running multiple container docker application.With compose we can configure all applicaiton services
+#Once We issue a single command we can create or stop all our services..
+services:
+  accounts:
+    image: "wishmebest/accounts:S4"
+    container_name: account-ms # This will give container name account-ms when it is trying to generate new container,
+    #If we don't give then whenever a new container created a random name will be assigned by Docker server
+    ports:
+      - "8080:8080" #We are using"-"whenever we are trying to provide multiple elements inside YML file
+    deploy:
+      resources: #When my container is created I want to make sure that it has maximum memory allocated,
+        #Our system have 16GB memory and when we are telling docker server to assign maximum of 700mb memory.
+        limits:
+           memory: 700m
+    networks:
+      - eazyBanks
+  loan:
+    image: "wishmebest/loan:S4"
+    container_name: loan-ms
+    ports:
+      - "8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    networks:
+      - eazyBanks
+  card:
+    image: "wishmebest/card:S4"
+    container_name: card-ms
+    ports:
+      - "9000:9000"
+    deploy:
+      resources:
+        limits:
+         memory: 700m
+         #Under this network we can define any number of networks
+    networks:
+      - eazyBanks
+      #With this I am telling my Docker server ,please create a network with the name EazyBanks with driver Bridge
+networks:
+  eazyBanks:
+    driver: "bridge"
+
+#All microservices will start in diffrent isolated network --But suppose there is scenorio where MS need to talk to each other
+#It will not work by default as they will start in their own isolated network..Now to make sure interconnection is working we
+#need tag all Ms under same network
+#Now we are using same network inside Account,Loan,Card Ms ,my docker server is going to establish a bridge using which all my MS
+#they will communincate with each other.
