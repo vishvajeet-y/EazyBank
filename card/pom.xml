@@ -103,6 +103,26 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.6</version>
+				<configuration>
+					<from>
+
+						<image>openjdk:26-ea-22-oracle</image>
+						<platforms>
+							<platform>
+								<os>linux</os>
+								<architecture>arm64</architecture>
+							</platform>
+						</platforms>
+					</from>
+					<to>
+						<image>wishmebest/${project.artifactId}:S4</image>
+					</to>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
