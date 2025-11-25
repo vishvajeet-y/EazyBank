@@ -1,0 +1,14 @@
+spring:
+  config:
+    activate:
+      on-Profile: "qa"
+build:
+  version : "3.0"
+cards:
+  message: "Welcome to EazyBanks card related qa APIs"
+  contactDetails:
+    name: "Vishvajeet"
+    email: "vish@gmail.com"
+  onCallSupport:
+    - (777)435-8907
+    - (777)213-0987
