@@ -20,5 +20,23 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql:  true
+  config:
+    import:
+      - "application_qa.yml"
+      - "application_prod.yml"
+  profiles:
+    active:
+      - "qa"
 
+
+build:
+  version: "1.0"
+loans:
+  message: "Welcome to EazyBank Loand API Dev Environment"
+  contactDetails:
+    name: "Akash"
+    email: "akash@gmail.com"
+  onCallSupport:
+    - (555)654-9807
+    - (555)326-1092
 
