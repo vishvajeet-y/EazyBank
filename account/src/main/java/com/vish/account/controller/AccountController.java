@@ -176,7 +176,7 @@ public class AccountController {
    }
 @Operation(
         summary = "Get Build Information",
-        description = "Get Build Information that is depoloyed into account microservices"
+        description = "Get Build Information that is deployed into account microservices"
 )
     @ApiResponses({
             @ApiResponse(responseCode = "200",
