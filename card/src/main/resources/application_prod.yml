@@ -1,0 +1,16 @@
+spring:
+  config:
+    activate:
+      on-Profile: "prod"
+
+build:
+  version: "2.0"
+
+cards:
+  message : "Welcome to EazyBanks card related prod APIs"
+  contactDetails:
+    name: "Rahul"
+    email: "Rahul@gmail.com"
+  onCallSupport:
+    - (666)234-9087
+    - (666)213-2037

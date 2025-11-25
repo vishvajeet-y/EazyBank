@@ -19,4 +19,22 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql:  true
+  config:
+    import:
+      - "application_prod.yml" #We are using - because we are calling list of element , We've created all required profile
+      - "application_qa.yml" #and mention that in {application.properties}
+  profiles:
+    active:  # We should activate one profile , if we are not activating any profile, a default profile will be activated
+      - "prod". #If we want to change this value and activate QA then we need to change value and regenerate Docker.
+
+build:
+  version: "3.0"
+accounts:
+  message: "Welcome to EazyBanks account related local APIs"
+  contactDetails:
+    name: "Vis Doe-Developer"
+    email: "vis@gmail.com"
+  onCallSupport:
+    - (555)555-1234
+    - (555)523-1345
 

@@ -16,4 +16,24 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  config:
+    import:
+      - "application_prod.yml"
+      -  "application_qa.yml"
+  profiles:
+    active:
+      - "qa"
+
+build:
+  version: "1.0"
+
+cards:
+  message: "Welcome to EazyBanks card related Dev APIs"
+  contactDetails:
+    name: "Akash"
+    email: "akash@gmail.com"
+  onCallSupport:
+    - (555)234-9807
+    - (555)213-9087
+
 

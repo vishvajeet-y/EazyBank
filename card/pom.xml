@@ -119,7 +119,7 @@
 						</platforms>
 					</from>
 					<to>
-						<image>wishmebest/${project.artifactId}:S4</image>
+						<image>wishmebest/${project.artifactId}:S6</image>
 					</to>
 				</configuration>
 			</plugin>

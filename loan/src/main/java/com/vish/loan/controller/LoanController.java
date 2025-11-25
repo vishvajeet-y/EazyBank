@@ -2,6 +2,7 @@ package com.vish.loan.controller;
 
 import com.vish.loan.constants.LoanConstants;
 import com.vish.loan.dto.ErrorResponseDto;
+import com.vish.loan.dto.LoanContactInfoDto;
 import com.vish.loan.dto.LoanDto;
 import com.vish.loan.dto.ResponseDto;
 import com.vish.loan.entity.Loan;
@@ -15,6 +16,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,11 +34,20 @@ import java.util.Optional;
         description = "CRUD REST APIs in EazyBank to CREATE, UPDATE, FETCH AND DELETE loan details"
 )
 @RestController
-@AllArgsConstructor
 @Validated
+@EnableConfigurationProperties(value = {LoanContactInfoDto.class})
 @RequestMapping(path = "/api",produces = {MediaType.APPLICATION_JSON_VALUE})
 public class LoanController {
     ILoanService loanService;
+    @Value("${build.version}")
+    private String buildInfo;
+    @Autowired
+   private Environment environment;
+    @Autowired
+    private LoanContactInfoDto loanContactInfoDto;
+    public LoanController(ILoanService loanService) {
+        this.loanService = loanService;
+    }
 
     @Operation(
             summary = "Create Loan REST API",
@@ -155,7 +169,78 @@ public class LoanController {
     }
   }
 
+
+         @Operation(
+                 summary = "Get Build Information",
+                 description = "Get Build Information that is deployed into Loan Microservices"
+         )
+        @ApiResponses({
+                @ApiResponse(
+                        responseCode = "200",
+                        description = "HTTP Status OK"
+
+                ),
+                @ApiResponse(
+                        responseCode = "500",
+                        description = "HTTP Status Internal Server Error",
+                        content = @Content(
+                                schema = @Schema(implementation = ErrorResponseDto.class)
+                        )
+                )
+        })
+    @GetMapping("/build-info")
+    public  ResponseEntity<String> getBuildInfo(){
+           return ResponseEntity.status(HttpStatus.OK).body(buildInfo);
+         }
+    @Operation(
+            summary = "Get Java version",
+            description ="Get Java versions details that is installed into cards microservice"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+
+                    )
+            )
+    })
+    @GetMapping("/java-version")
+    public ResponseEntity<String>getJavaVersion(){
+        return  ResponseEntity.status(HttpStatus.OK).body(environment.getProperty("JAVA_HOME"));
+    }
+    @Operation(
+            summary = "Get Contact Info",
+            description = "Contact Info details that can be reached out in case of any issues"
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "HTTP Status OK"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "HTTP Status Internal Server Error",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponseDto.class)
+                    )
+            )
+    })
+    @GetMapping("/contact-info")
+    public ResponseEntity<LoanContactInfoDto> getContactInfo(){
+        return  ResponseEntity.status(HttpStatus.OK).body(loanContactInfoDto);
+    }
+
 }
+
+
+
+
 /*
 The Controller layer is only responsible to accept the request and to send the response and to perform any validation.
  */

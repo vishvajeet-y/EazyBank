@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-Profile: "prod"
+
+loans:
+  message: "Welcome to EazyBank Load related prod API"
+  contactDetails:
+    name: "vishvajeet"
+    email: "vish@gmail.com"
+  onCallSupport:
+    - (777)879-8760
+    -  (333)435-8650

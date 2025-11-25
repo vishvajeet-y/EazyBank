@@ -1,0 +1,13 @@
+spring:
+  config:
+    activate:
+      on-Profile: "qa"
+
+loans:
+  message: "Welcome to EazyBank Loan relatedQA APIs"
+  contactDetails:
+    name: "Rahul"
+    email: "Rahul@gmail.com"
+  onCallSupport:
+    - (666)654-8796
+    - (666)423-1209
