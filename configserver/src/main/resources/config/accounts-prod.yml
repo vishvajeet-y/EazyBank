@@ -1,12 +1,8 @@
-spring:
-  config:
-    activate:
-      on-Profile: "prod"
 build: "3.0"
 accounts:
   message: "Welcome to EazyBanks account related prod APIs"
   contactDetails:
-    name: "Rahul-prodHead"
+    name: "Rahul-prod Head"
     email: "rahul@gmail.com"
   onCallSupport:
     - (777)325-7659

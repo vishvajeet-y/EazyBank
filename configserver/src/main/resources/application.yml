@@ -1,0 +1,19 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: "configserver"
+  profiles:
+    active: native
+  cloud:
+    config:
+      server:
+        native:
+          search-location: "classpath:/config"
+
+#cloud.config.server-->This enables cloud config server
+#native:Tells config server not to use git.It should use local file packaged inside the application
+#Classpath = src/main/resources
+#Use the files inside the config folder inside the application’s classpath as the configuration source.
+
