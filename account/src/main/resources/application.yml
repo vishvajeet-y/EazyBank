@@ -3,7 +3,11 @@ server:
 
 spring:
   application:
-    name: account
+    name: "accounts" # Here we are giving same name which is accounts because we're trying to follow same name inside the file name convention
+    #Using these application name our individual MS is going to request config server that my name is accounts
+    #Please give me property related to me based on current activated profiles
+  profiles:
+    active: "prod" # It will activate based upon prod profile
   main:
     banner-mode: off
   datasource:
@@ -19,22 +23,12 @@ spring:
     hibernate:
       ddl-auto: update
       show-sql:  true
+
   config:
-    import:
-      - "application_prod.yml" #We are using - because we are calling list of element , We've created all required profile
-      - "application_qa.yml" #and mention that in {application.properties}
-  profiles:
-    active:  # We should activate one profile , if we are not activating any profile, a default profile will be activated
-      - "prod". #If we want to change this value and activate QA then we need to change value and regenerate Docker.
+    import: "optional:configserver:http://localhost:8071/"
 
-build:
-  version: "3.0"
-accounts:
-  message: "Welcome to EazyBanks account related local APIs"
-  contactDetails:
-    name: "Vis Doe-Developer"
-    email: "vis@gmail.com"
-  onCallSupport:
-    - (555)555-1234
-    - (555)523-1345
-
+    ##################
+    #We are mentioning {configserver} as prefix ,as it is indication to account MS or any spring boot applicaition that it
+    # is going to connect with the Config Server and we are mentioning {Optional}--> we are telling account MS,it is not able
+    # to connect with the configserver for whatever reason it can still continue to start MS application
+    #If our properties are super important for MS then without them we can't perform any buisness logic then we can remove {optional}
