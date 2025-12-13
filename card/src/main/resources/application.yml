@@ -2,7 +2,9 @@ server:
   port: 9000
 spring:
   application:
-    name:card
+    name: "cards"
+  profiles:
+    active: "prod"
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -16,24 +18,12 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
   config:
-    import:
-      - "application_prod.yml"
-      -  "application_qa.yml"
-  profiles:
-    active:
-      - "qa"
+    import: "optional:configserver:http://localhost:8071/"
 
-build:
-  version: "1.0"
-
-cards:
-  message: "Welcome to EazyBanks card related Dev APIs"
-  contactDetails:
-    name: "Akash"
-    email: "akash@gmail.com"
-  onCallSupport:
-    - (555)234-9807
-    - (555)213-9087
-
-
+    ##################
+    #We are mentioning {configserver} as prefix ,as it is indication to account MS or any spring boot applicaition that it
+    # is going to connect with the Config Server and we are mentioning {Optional}--> we are telling account MS,it is not able
+    # to connect with the configserver for whatever reason it can still continue to start MS application
+    #If our properties are super important for MS then without them we can't perform any buisness logic then we can remove {optional}
