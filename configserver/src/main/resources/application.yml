@@ -5,15 +5,32 @@ spring:
   application:
     name: "configserver"
   profiles:
-    active: native
+    active: git
   cloud:
     config:
       server:
-        native:
-          search-location: "classpath:/config"
+        git:
+          uri: "https://github.com/vishvajeet-y/EazyBank-config.git"
+          default-level: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+        #native:
+         # search-location: "file:///Users//vishvajeetyadav//Documents//EazyBank-Config"
+          #search-location: "classpath:/config"
 
 #cloud.config.server-->This enables cloud config server
 #native:Tells config server not to use git.It should use local file packaged inside the application
 #Classpath = src/main/resources
 #Use the files inside the config folder inside the application’s classpath as the configuration source.
+
+#clone-on-start:true--->with this property, we are telling config server that please try to clone github repo into local system during the startup itself
+#If we don't mention this to be true, the cloning of Github repo will happen only when the first request come to our config server
+#and this may result into some issues like our config server may not get started properly but when our first reques
+#come towards our config server then it cannot clone and it cannot read configuration ,in such scenorios it is going to create
+# some issues on the accounts MS
+
+#force-pull:true -->Sometimes we've changed some local changes inside the local repo that cloned inside our config server
+#By mentioning above we're telling to override all the local changes whenever we're trying to start or restart our config-server
+
 
