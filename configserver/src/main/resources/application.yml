@@ -18,6 +18,16 @@ spring:
         #native:
          # search-location: "file:///Users//vishvajeetyadav//Documents//EazyBank-Config"
           #search-location: "classpath:/config"
+  rabbitmq:  #Setting up rabbitmq message broker ,so once update happen in github config,it trigger /monitor which trigger /busrefesh in background for all connected services..
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator
 
 #cloud.config.server-->This enables cloud config server
 #native:Tells config server not to use git.It should use local file packaged inside the application
@@ -33,4 +43,6 @@ spring:
 #force-pull:true -->Sometimes we've changed some local changes inside the local repo that cloned inside our config server
 #By mentioning above we're telling to override all the local changes whenever we're trying to start or restart our config-server
 
+encrypt:
+  key: "AXCVBWESDF"
 
