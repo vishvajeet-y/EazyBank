@@ -8,6 +8,11 @@ spring:
     active: "prod"
   main:
     banner-mode: off
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -25,6 +30,12 @@ spring:
 
   config:
     import: "optional:configserver:http://localhost:8071/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator
 
     ##################
     #We are mentioning {configserver} as prefix ,as it is indication to account MS or any spring boot applicaition that it
