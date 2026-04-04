@@ -14,6 +14,9 @@ services:
       timeout: 5s #Wait for 5s in each tries to get response
       retries: 10 #if there is failure ,retries 10 times
       start_period: 5s #it tells to execute healthcheck command after 5s..
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
   #########Configserver###########
   configserver:
     image: "wishmebest/configserver:s6"
@@ -34,12 +37,9 @@ services:
       timeout: 5s
       retries: 10
       start_period: 10s
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    networks:
-      - eazyBanks
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
   ###########accounts ###########
   accounts:
     image: "wishmebest/accounts:S6"
@@ -50,18 +50,16 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources: #When my container is created I want to make sure that it has maximum memory allocated,
+   # deploy:
+    #  resources: #When my container is created I want to make sure that it has maximum memory allocated,
         #Our system have 16GB memory and when we are telling docker server to assign maximum of 700mb memory.
-        limits:
-           memory: 700m
+     #   limits:
+      #     memory: 700m
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILE_ACTIVE: default
       SPRING_APPLICATION_NAME: "accounts"
-    networks:
-      - eazyBanks
-
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
   ##########Loan ############
   loan:
     image: "wishmebest/loan:S6"
@@ -71,23 +69,29 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     environment:
+      SPRING_APPLICATION_NAME: "loan"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+      #deploy:
+     # resources:
+    #    limits:
+    #      memory: 700m
+   # environment:
      #We don’t mention<optional>because most of our application depends upon configserver..
       #We place “configserver” in place of “localhost” ,behind the scene my
       #Docker will make this work because we are trying to start our container
       #Inside same network which is EazyBank and all container can communicate by using service name..
       #Prefix should always be configserver..here coincidently prefix value and service name value is same..
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      #SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
       #We need to mention the profile we want to activate whenever we’re trying to run docker compose.yml file..
-      SPRING_PROFILE_ACTIVE: default
+     # SPRING_PROFILE_ACTIVE: default
       #The name of application should match with whatever name we’ve considered for naming convention of our files that we’ve stored inside configserver..
-      SPRING_APPLICATION_NAME: "loan"
-    networks:
-      - eazyBanks
+    #  SPRING_APPLICATION_NAME: "loan"
+   # networks:
+    #  - eazyBanks
   ##########card##########
   card:
     image: "wishmebest/card:S6"
@@ -97,18 +101,23 @@ services:
     depends_on:
       configserver:
         condition: service_healthy
-    deploy:
-      resources:
-        limits:
-         memory: 700m
-
     environment:
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
-      SPRING_PROFILE_ACTIVE: default
       SPRING_APPLICATION_NAME: "cards"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+      #deploy:
+     # resources:
+      #  limits:
+       #  memory: 700m
+
+    #environment:
+     # SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      #SPRING_PROFILE_ACTIVE: default
+      #SPRING_APPLICATION_NAME: "cards"
       #Under this network we can define any number of networks
-    networks:
-      - eazyBanks
+    #networks:
+     # - eazyBanks
 
 
 
