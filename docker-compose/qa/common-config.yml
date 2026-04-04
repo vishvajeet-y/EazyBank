@@ -1,0 +1,25 @@
+services:
+  #In this service I want to mention network related configuration
+  network-deploy-service:
+    networks:
+      - eazybank
+#whenever we're creating any MS,they are going to extend this service
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    environment:
+      SPRING_RABBITMQ_HOST: "rabbit"
+#Any MS instance which depends upon configserver
+  microservice-configserver-config:
+    extends:
+      service: microservice-base-config
+    environment:
+      SPRING_PROFILES_ACTIVE: qa
+      SPRING_CONFIG_IMPORT: configserver:http://configserver:8071/
+
+      #We've three diffrent services : network-deploy-service,microservice-base-config,microservice-configserver-config
+      #we're seperating network-deploy,microservice-base-config because rabbit service only requires netwrok-deploy-service..

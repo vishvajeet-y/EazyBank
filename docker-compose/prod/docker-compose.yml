@@ -1,0 +1,135 @@
+#Docker compose is tool for defining and running multiple container docker application.With compose we can configure all application services
+#Once We issue a single command we can create or stop all our services..
+services:
+  ########RabbitMQ#######
+  rabbit:
+    image: "rabbitmq:4-management"
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity # This value is mentioned by rabbitmq in official documents
+      interval: 10s #Do retries after interval of 10s
+      timeout: 5s #Wait for 5s in each tries to get response
+      retries: 10 #if there is failure ,retries 10 times
+      start_period: 5s #it tells to execute healthcheck command after 5s..
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+  #########Configserver###########
+  configserver:
+    image: "wishmebest/configserver:s6"
+    container_name: configserver-ms
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+    healthcheck:
+      #Using curl command we are invoking /actuator/health/readiness.. whenever my Docker Compose try to start configserver
+      #it will health check if it started successfully or not.. We get output UP/DOWN..
+      #If it is UP then it indicates my service is started and it's health is perfect otherwise we're telling to simply exit this healthcheck command
+      #If leave only this health check command ,my docker compose will try to run this command for once ..If our configserver takes 20-30s to get start
+      #our application ,in such scenorios we will get failure as output .. that'swhy we need to write other thing also..
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+  ###########accounts ###########
+  accounts:
+    image: "wishmebest/accounts:S6"
+    container_name: account-ms # This will give container name account-ms when it is trying to generate new container,
+    #If we don't give then whenever a new container created a random name will be assigned by Docker server
+    ports:
+      - "8080:8080" #We are using"-"whenever we are trying to provide multiple elements inside YML file
+    depends_on:
+      configserver:
+        condition: service_healthy
+   # deploy:
+    #  resources: #When my container is created I want to make sure that it has maximum memory allocated,
+        #Our system have 16GB memory and when we are telling docker server to assign maximum of 700mb memory.
+     #   limits:
+      #     memory: 700m
+    environment:
+      SPRING_APPLICATION_NAME: "accounts"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+  ##########Loan ############
+  loan:
+    image: "wishmebest/loan:S6"
+    container_name: loan-ms
+    ports:
+      - "8090:8090"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "loan"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+      #deploy:
+     # resources:
+    #    limits:
+    #      memory: 700m
+   # environment:
+     #We don’t mention<optional>because most of our application depends upon configserver..
+      #We place “configserver” in place of “localhost” ,behind the scene my
+      #Docker will make this work because we are trying to start our container
+      #Inside same network which is EazyBank and all container can communicate by using service name..
+      #Prefix should always be configserver..here coincidently prefix value and service name value is same..
+      #SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      #We need to mention the profile we want to activate whenever we’re trying to run docker compose.yml file..
+     # SPRING_PROFILE_ACTIVE: default
+      #The name of application should match with whatever name we’ve considered for naming convention of our files that we’ve stored inside configserver..
+    #  SPRING_APPLICATION_NAME: "loan"
+   # networks:
+    #  - eazyBanks
+  ##########card##########
+  card:
+    image: "wishmebest/card:S6"
+    container_name: card-ms
+    ports:
+      - "9000:9000"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "cards"
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+      #deploy:
+     # resources:
+      #  limits:
+       #  memory: 700m
+
+    #environment:
+     # SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071/"
+      #SPRING_PROFILE_ACTIVE: default
+      #SPRING_APPLICATION_NAME: "cards"
+      #Under this network we can define any number of networks
+    #networks:
+     # - eazyBanks
+
+
+
+
+
+    #With this I am telling my Docker server ,please create a network with the name EazyBanks with driver Bridge
+networks:
+  eazyBanks:
+    driver: "bridge"
+
+#All microservices will start in diffrent isolated network --But suppose there is scenorio where MS need to talk to each other
+#It will not work by default as they will start in their own isolated network..Now to make sure interconnection is working we
+#need tag all Ms under same network
+#Now we are using same network inside Account,Loan,Card Ms ,my docker server is going to establish a bridge using which all my MS
+#they will communincate with each other.
