@@ -4,6 +4,11 @@ server:
 spring:
   application:
     name: "configserver"
+    rabbitmq:
+      host: "localhost"
+      port: 5672
+      username: "guest"
+      password: "guest"
   profiles:
     active: git
   cloud:
@@ -24,7 +29,17 @@ spring:
     username: "guest"
     password: "guest"
 management:
+  #We're telling actuator ,please enable the health related information which will give me details about readiness & liveness state..
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
   endpoints:
+    #we want to read health information using endpoints,we need to make sure we're mentioning a child element under management endpoints..
+    health:
+      probes:
+        enabled: true
     web:
       exposure:
         include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator
@@ -36,7 +51,7 @@ management:
 
 #clone-on-start:true--->with this property, we are telling config server that please try to clone github repo into local system during the startup itself
 #If we don't mention this to be true, the cloning of Github repo will happen only when the first request come to our config server
-#and this may result into some issues like our config server may not get started properly but when our first reques
+#and this may result into some issues like our config server may not get started properly but when our first request
 #come towards our config server then it cannot clone and it cannot read configuration ,in such scenorios it is going to create
 # some issues on the accounts MS
 
