@@ -35,11 +35,12 @@ management:
       enabled: true
     liveness-state:
       enabled: true
-  endpoints:
-    #we want to read health information using endpoints,we need to make sure we're mentioning a child element under management endpoints..
+  endpoint:
+      #we want to read health information using endpoints,we need to make sure we're mentioning a child element under management endpoints..
     health:
       probes:
         enabled: true
+  endpoints:
     web:
       exposure:
         include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator

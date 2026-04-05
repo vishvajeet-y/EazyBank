@@ -2,7 +2,7 @@ services:
   #In this service I want to mention network related configuration
   network-deploy-service:
     networks:
-      - eazybank
+      - eazyBanks
 #whenever we're creating any MS,they are going to extend this service
   microservice-base-config:
     extends:

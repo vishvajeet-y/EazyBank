@@ -19,7 +19,7 @@ services:
       service: network-deploy-service
   #########Configserver###########
   configserver:
-    image: "wishmebest/configserver:s6"
+    image: "wishmebest/configserver:S6"
     container_name: configserver-ms
     ports:
       - "8071:8071"
@@ -33,6 +33,7 @@ services:
       #If leave only this health check command ,my docker compose will try to run this command for once ..If our configserver takes 20-30s to get start
       #our application ,in such scenorios we will get failure as output .. that'swhy we need to write other thing also..
       test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      #test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8071/actuator/health/readiness || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -42,7 +43,7 @@ services:
       service: microservice-base-config
   ###########accounts ###########
   accounts:
-    image: "wishmebest/accounts:S6"
+    image: "wishmebest/account:S6"
     container_name: account-ms # This will give container name account-ms when it is trying to generate new container,
     #If we don't give then whenever a new container created a random name will be assigned by Docker server
     ports:
