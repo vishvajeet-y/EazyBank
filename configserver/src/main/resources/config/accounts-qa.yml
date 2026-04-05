@@ -1,7 +1,3 @@
-spring:
-  config:
-    activate:
-      on-Profile: "qa"#This allow us to tell spring boot when those profiles or file has to be activated
 build:
   version: "2.0"
 accounts:

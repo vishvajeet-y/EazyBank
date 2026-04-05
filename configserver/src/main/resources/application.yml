@@ -1,0 +1,64 @@
+server:
+  port: 8071
+
+spring:
+  application:
+    name: "configserver"
+    rabbitmq:
+      host: "localhost"
+      port: 5672
+      username: "guest"
+      password: "guest"
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/vishvajeet-y/EazyBank-config.git"
+          default-level: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+        #native:
+         # search-location: "file:///Users//vishvajeetyadav//Documents//EazyBank-Config"
+          #search-location: "classpath:/config"
+  rabbitmq:  #Setting up rabbitmq message broker ,so once update happen in github config,it trigger /monitor which trigger /busrefesh in background for all connected services..
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+management:
+  #We're telling actuator ,please enable the health related information which will give me details about readiness & liveness state..
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+      #we want to read health information using endpoints,we need to make sure we're mentioning a child element under management endpoints..
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator
+
+#cloud.config.server-->This enables cloud config server
+#native:Tells config server not to use git.It should use local file packaged inside the application
+#Classpath = src/main/resources
+#Use the files inside the config folder inside the application’s classpath as the configuration source.
+
+#clone-on-start:true--->with this property, we are telling config server that please try to clone github repo into local system during the startup itself
+#If we don't mention this to be true, the cloning of Github repo will happen only when the first request come to our config server
+#and this may result into some issues like our config server may not get started properly but when our first request
+#come towards our config server then it cannot clone and it cannot read configuration ,in such scenorios it is going to create
+# some issues on the accounts MS
+
+#force-pull:true -->Sometimes we've changed some local changes inside the local repo that cloned inside our config server
+#By mentioning above we're telling to override all the local changes whenever we're trying to start or restart our config-server
+
+encrypt:
+  key: "AXCVBWESDF"
+
