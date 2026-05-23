@@ -39,6 +39,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-server</artifactId>
 		</dependency>
+		<!-- as they will slow down our configuration...
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
@@ -46,7 +47,7 @@
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-config-monitor</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -87,7 +88,7 @@
 						</platforms>
 					</from>
 					<to>
-						<image>wishmebest/${project.artifactId}:S6</image>
+						<image>wishmebest/${project.artifactId}:S8</image>
 					</to>
 				</configuration>
 			</plugin>

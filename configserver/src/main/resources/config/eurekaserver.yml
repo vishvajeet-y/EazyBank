@@ -1,0 +1,14 @@
+#we don't have multiple property file{qa,prod,dev} because my Eurekaserver is going to work in very similar way for all kind of profile..
+#This is becuase Eurekaserver does not have dependency on DB credentials or any other buisness logic which will behave in diffrent ways..
+
+server:
+  port: 8070
+eureka:
+  instance:
+    hostname: localhost
+
+  client:
+    fetchRegistry: false
+    registerWithEureka: false
+    serviceUrl:
+      defaultZone: http://${eurka.instance.hostname}:${server.port}/eureka

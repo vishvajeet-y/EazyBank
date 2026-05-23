@@ -4,11 +4,12 @@ server:
 spring:
   application:
     name: "configserver"
-    rabbitmq:
-      host: "localhost"
-      port: 5672
-      username: "guest"
-      password: "guest"
+      #we are removing them as they will slow down our applications.. too many services running..
+   # rabbitmq:
+    #  host: "localhost"
+    #  port: 5672
+     # username: "guest"
+     # password: "guest"
   profiles:
     active: git
   cloud:
@@ -23,11 +24,11 @@ spring:
         #native:
          # search-location: "file:///Users//vishvajeetyadav//Documents//EazyBank-Config"
           #search-location: "classpath:/config"
-  rabbitmq:  #Setting up rabbitmq message broker ,so once update happen in github config,it trigger /monitor which trigger /busrefesh in background for all connected services..
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
+ # rabbitmq:  #Setting up rabbitmq message broker ,so once update happen in github config,it trigger /monitor which trigger /busrefesh in background for all connected services..
+  #  host: "localhost"
+   # port: 5672
+    #username: "guest"
+    #password: "guest"
 management:
   #We're telling actuator ,please enable the health related information which will give me details about readiness & liveness state..
   health:
