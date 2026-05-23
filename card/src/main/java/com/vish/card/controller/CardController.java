@@ -97,7 +97,7 @@ public class CardController {
     public ResponseEntity<CardDto>fetchCard(@RequestParam @Pattern(regexp = "(^$|[0-9]{10})",message = "Mobile number must be 10 digits")
                                                 String mobileNumber){
         CardDto cardDto=cardServices.fetchCard(mobileNumber);
-        return ResponseEntity.status(HttpStatus.FOUND).body(cardDto);
+        return ResponseEntity.status(HttpStatus.OK).body(cardDto);
     }
     @Operation(
             summary = "Update Card Details REST API",
