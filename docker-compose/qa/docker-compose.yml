@@ -2,30 +2,30 @@
 #Once We issue a single command we can create or stop all our services..
 services:
   ########RabbitMQ#######
-  rabbit:
-    image: "rabbitmq:4-management"
-    hostname: rabbitmq
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-    healthcheck:
-      test: rabbitmq-diagnostics check_port_connectivity # This value is mentioned by rabbitmq in official documents
-      interval: 10s #Do retries after interval of 10s
-      timeout: 5s #Wait for 5s in each tries to get response
-      retries: 10 #if there is failure ,retries 10 times
-      start_period: 5s #it tells to execute healthcheck command after 5s..
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
+  #rabbit:
+    #image: "rabbitmq:4-management"
+    #hostname: rabbitmq
+    #ports:
+     # - "5672:5672"
+      #- "15672:15672"
+    #healthcheck:
+     # test: rabbitmq-diagnostics check_port_connectivity # This value is mentioned by rabbitmq in official documents
+      #interval: 10s #Do retries after interval of 10s
+      #timeout: 5s #Wait for 5s in each tries to get response
+      #retries: 10 #if there is failure ,retries 10 times
+      #start_period: 5s #it tells to execute healthcheck command after 5s..
+    #extends:
+     # file: common-config.yml
+      #service: network-deploy-service
   #########Configserver###########
   configserver:
-    image: "wishmebest/configserver:S6"
+    image: "wishmebest/configserver:S8"
     container_name: configserver-ms
     ports:
       - "8071:8071"
-    depends_on:
-      rabbit:
-        condition: service_healthy
+    #depends_on:
+     # rabbit:
+      #  condition: service_healthy
     healthcheck:
       #Using curl command we are invoking /actuator/health/readiness.. whenever my Docker Compose try to start configserver
       #it will health check if it started successfully or not.. We get output UP/DOWN..
@@ -40,9 +40,36 @@ services:
     extends:
       file: common-config.yml
       service: microservice-base-config
+
+  ###########EurekaServer##########
+  eurekaserver:
+    image: "wishmebest/eurekaserver:S8"
+    container_name: eurekaserver-ms
+    ports:
+      - 8070:8070
+    healthcheck:
+      #Using curl command we are invoking /actuator/health/readiness.. whenever my Docker Compose try to start eurekaserver
+      #it will health check if it started successfully or not.. We get output UP/DOWN..
+      #If it is UP then it indicates my service is started and it's health is perfect otherwise we're telling to simply exit this healthcheck command
+      #If leave only this health check command ,my docker compose will try to run this command for once ..If our eurekaserver takes 20-30s to get start
+      #our application ,in such scenorios we will get failure as output .. that'swhy we need to write other thing also..
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      #test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8071/actuator/health/readiness || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    depends_on:
+      configserver:
+        condition: service_healthy #my eurekaserver is going to depends on configserver because my Eurekaserver is going to load properties with help of configserver..
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
   ###########accounts ###########
   accounts:
-    image: "wishmebest/account:S6"
+    image: "wishmebest/account:S8"
     container_name: account-ms # This will give container name account-ms when it is trying to generate new container,
     #If we don't give then whenever a new container created a random name will be assigned by Docker server
     ports:
@@ -59,10 +86,10 @@ services:
       SPRING_APPLICATION_NAME: "accounts"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
   ##########Loan ############
   loan:
-    image: "wishmebest/loan:S6"
+    image: "wishmebest/loan:S8"
     container_name: loan-ms
     ports:
       - "8090:8090"
@@ -73,7 +100,7 @@ services:
       SPRING_APPLICATION_NAME: "loan"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
 
       #deploy:
      # resources:
@@ -94,7 +121,7 @@ services:
     #  - eazyBanks
   ##########card##########
   card:
-    image: "wishmebest/card:S6"
+    image: "wishmebest/card:S8"
     container_name: card-ms
     ports:
       - "9000:9000"
@@ -105,7 +132,7 @@ services:
       SPRING_APPLICATION_NAME: "cards"
     extends:
       file: common-config.yml
-      service: microservice-configserver-config
+      service: microservice-eureka-config
       #deploy:
      # resources:
       #  limits:
