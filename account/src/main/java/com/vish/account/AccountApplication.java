@@ -8,10 +8,12 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.models.annotations.OpenAPI30;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@EnableFeignClients// It will enable feign client related information inside my account MS
 @OpenAPIDefinition(
 		info = @Info(
 				title = "Account Microservice REST API Documentation",

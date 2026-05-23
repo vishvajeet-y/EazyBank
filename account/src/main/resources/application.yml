@@ -10,11 +10,11 @@ spring:
     active: "prod" # It will activate based upon prod profile
   main:
     banner-mode: off
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
+ # rabbitmq:
+  #  host: "localhost"
+   # port: 5672
+    #username: "guest"
+    #password: "guest"
   datasource:
     url: jdbc:h2:mem:testdb
     driverClassName: org.h2.Driver
@@ -37,10 +37,41 @@ management:
     web:
       exposure:
         include: "*" # We are telling spring boot actuator to enable and expose all management endpoints supported by Spring Boot Actuator
-
+  endpoint:
+    shutdown:
+      access: unrestricted
+endpoints:
+  shutdown:
+    enabled : true
+  info:
+    env:
+      enabled: true
 
     ##################
     #We are mentioning {configserver} as prefix ,as it is indication to account MS or any spring boot applicaition that it
     # is going to connect with the Config Server and we are mentioning {Optional}--> we are telling account MS,it is not able
     # to connect with the configserver for whatever reason it can still continue to start MS application
     #If our properties are super important for MS then without them we can't perform any buisness logic then we can remove {optional}
+
+eureka:
+  instance:
+    #whenever my account MS is trying to register with Eureka server it will try to registre with hostname.. hostname will make sense when we
+    #are using DNS mapping inside our MS network .. But inside our local system we don't have any DNS mapping setup,we should use preferIPaddress:true
+    #so my account MS,my Eurekaserver is going to share IP address details of account MS so that they can connect with my account MS..
+    preferIpAddress: true
+
+  client:
+      #It make sure,our Account MS will try to fetch the registry details whenever it is trying to communicate with other MS
+    fetchRegistry: true
+      #we want our Account MS to be registered with the Eureka server
+    registerWithEureka: true
+    #we will mention hardcoded value
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
+#The purpose of adding info related information is same information we can see on Eureka dashboard as there will be multiple MS will be registerd
+#with Eureka Dashboard.... By Default ,the info related actuator URL is not enabled ,we will enable from management..
+info:
+  app:
+    name: "accounts"
+    description: "Eazy Bank Account application "
+    version: "1.0.0 "

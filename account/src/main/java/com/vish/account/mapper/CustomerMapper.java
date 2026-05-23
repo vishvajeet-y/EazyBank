@@ -1,6 +1,7 @@
 package com.vish.account.mapper;
 
 import com.vish.account.dto.CustomerDTO;
+import com.vish.account.dto.CustomerDetailsDTO;
 import com.vish.account.entity.Customer;
 /*
 In order to save the database into the database with the help of repository interface ,we need to send
@@ -22,6 +23,12 @@ public class CustomerMapper {
         customer.setMobileNumber(customerDTO.getMobileNumber());
 
         return  customer;
+    }
+    public static CustomerDetailsDTO mapToCustomerDetailsDTO(Customer customer,CustomerDetailsDTO customerDetailsDTO){
+           customerDetailsDTO.setName(customer.getName());
+           customerDetailsDTO.setEmail(customer.getEmail());
+           customerDetailsDTO.setMobileNumber(customer.getMobileNumber());
+           return customerDetailsDTO;
     }
 
 
