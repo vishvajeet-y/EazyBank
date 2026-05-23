@@ -106,6 +106,22 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
 
+  ##############Loan2 #########
+  ##########Loan ############
+  loan1:
+    image: "wishmebest/loan:S8"
+    container_name: loan-ms1
+    ports:
+      - "8091:8090"
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "loan"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+
       #deploy:
      # resources:
     #    limits:
