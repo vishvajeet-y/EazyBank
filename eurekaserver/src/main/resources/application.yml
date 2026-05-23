@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: "eurekaserver"
+    main:
+      banner-mode: off
+
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+# we will enable readiness and liveness of Eurekaserver because Dockercompose file ,we are going to make sure that Eurekaserver is started
+  #before accounts,loan & card MS..
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+      #Other MS has dependecy on Eurekaserver ,we need to define health check details inside Docker compose file..
+      #To health check we need to make sure we are exposing readiness and liveness details..
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+
