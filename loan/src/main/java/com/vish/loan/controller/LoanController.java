@@ -99,7 +99,7 @@ public class LoanController {
     LoanDto loandto = loanService.fetchLoan(mobileNumber);
 
 
-    return ResponseEntity.status(HttpStatus.FOUND).body(loandto);
+    return ResponseEntity.status(HttpStatus.OK).body(loandto);
 
 }
     @Operation(
